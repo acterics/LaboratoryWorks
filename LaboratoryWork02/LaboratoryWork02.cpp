@@ -9,7 +9,7 @@ HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];
 
-const unsigned int windowWidth = 300, windowHeight = 300;
+const unsigned int windowWidth = 600, windowHeight = 600;
 vor::Voronoi * diagram = new vor::Voronoi();
 vor::Vertices * ver = new vor::Vertices();
 vor ::Edges * edg = new vor::Edges();
@@ -19,6 +19,7 @@ ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+void				RefreshDiagram(HWND hWnd);
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -91,8 +92,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    {
       return FALSE;
    }
-   ver = diagram->init("ResourceFile.txt", windowWidth, windowHeight);
-   edg = diagram->GetEdges(ver, windowWidth, windowHeight);
+  edg = diagram->GetEdges(ver, windowWidth, windowHeight);
 
    ShowWindow(hWnd, nCmdShow); 
    UpdateWindow(hWnd);
@@ -118,18 +118,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             case IDM_EXIT:
                 DestroyWindow(hWnd);
                 break;
+			case IDM_GENERATE:
+				ver = diagram->generate(10, windowWidth, windowHeight);
+				edg = diagram->GetEdges(ver, windowWidth, windowHeight);
+				break;
+			case IDM_INIT:
+				ver = diagram->init("ResourceFile.txt", windowWidth, windowHeight);
+				edg = diagram->GetEdges(ver, windowWidth, windowHeight);
+				break;
             default:
                 return DefWindowProc(hWnd, message, wParam, lParam);
             }
         }
         break;
     case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
-			diagram->drawDiagram(hdc, edg);
-            EndPaint(hWnd, &ps);
-        }
+		RefreshDiagram(hWnd);
         break;
     case WM_DESTROY:
         PostQuitMessage(0);
@@ -158,4 +161,12 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     return (INT_PTR)FALSE;
+}
+
+void RefreshDiagram(HWND hWnd)
+{
+	PAINTSTRUCT ps;
+	HDC hdc = BeginPaint(hWnd, &ps);
+	diagram->drawDiagram(hdc, edg);
+	EndPaint(hWnd, &ps);
 }

@@ -11,6 +11,10 @@
 #include "VEvent.h"
 #include <functional>
 #include <windows.h>
+#include <iostream>
+#include <algorithm>
+#include <set>
+#include <time.h>
 
 #pragma warning(disable : 4703)
 
@@ -30,6 +34,7 @@ namespace vor
 
 
 		Voronoi();
+		~Voronoi();
 
 
 		Vertices *		generate(int count, int w, int h);
@@ -37,6 +42,7 @@ namespace vor
 		Edges *			GetEdges(Vertices * v, int w, int h);
 		void			drawLine(HDC hdc, VPoint * begin, VPoint * end);
 		void			drawDiagram(HDC hdc, Edges * edges);
+		void			clearDiagram();
 
 	private:
 

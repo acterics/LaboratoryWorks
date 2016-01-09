@@ -1,14 +1,12 @@
 #include "Voronoi.h"
-#include <iostream>
-#include <algorithm>
-#include <set>
 
 
 using namespace vor;
 
 Voronoi::Voronoi()
 {
-	edges = 0;
+	srand(time(nullptr));
+	edges = nullptr;
 }
 
 Vertices * vor::Voronoi::generate(int count, int w, int h)
@@ -40,10 +38,12 @@ Vertices * vor::Voronoi::init(std::string filePath, int w, int h)
 
 Edges * Voronoi::GetEdges(Vertices * v, int w, int h)
 {
+	if (v->empty())
+		return  new Edges();
+	clearDiagram();
 	width = w;
 	height = h;
 	places = v;
-	root = 0;
 
 	if(!edges) edges = new Edges();
 	else 
@@ -87,9 +87,9 @@ Edges * Voronoi::GetEdges(Vertices * v, int w, int h)
 
 void vor::Voronoi::drawLine(HDC hdc, VPoint * begin, VPoint * end)
 {
-	double x, y;
-	double dx = 0.1;
-	double dy = ((end->y - begin->y) / (end->x - begin->x)) * dx;
+	double x, y, dx, dy;
+	dx = 0.1;
+	dy = (end->y - begin->y) / (end->x - begin->x) * dx;
 	if (begin->x > end->x)
 	{
 		x = end->x;
@@ -100,15 +100,16 @@ void vor::Voronoi::drawLine(HDC hdc, VPoint * begin, VPoint * end)
 		x = begin->x;
 		y = begin->y;
 	}
-	for (;x < max(end->x, begin->x); x += dx)
+	for (;x < max(end->x, begin->x); x += dx, y += dy)
 	{
 		SetPixel(hdc, (int)x, (int)y, RGB(0, 1, 1));
-		y += dy;
 	}
 }
 
 void vor::Voronoi::drawDiagram(HDC hdc, Edges * edges)
 {
+	if (edges->empty())
+		return;
 	for (const auto& point : *places)
 	{
 		double x = point->x, y = point->y;
@@ -155,7 +156,6 @@ void	Voronoi::InsertParabola(VPoint * p)
 	el->neighbour = er;
 	edges->push_back(el);
 
-	// pøestavuju strom .. vkládám novou parabolu
 	par->edge = er;
 	par->isLeaf = false;
 
@@ -340,6 +340,18 @@ VPoint * Voronoi::GetEdgeIntersection(VEdge * a, VEdge * b)
 	VPoint * p = new VPoint(x, y);		
 	points.push_back(p);
 	return p;
+}
+
+void Voronoi::clearDiagram()
+{
+	ly = 0;
+	root = nullptr;
+	deleted.clear();
+	points.clear();
+}
+
+Voronoi::~Voronoi()
+{
 }
 
 

@@ -40,14 +40,14 @@ public:
 	
 	VParabola	();
 	VParabola	(VPoint * s);
-
+	~VParabola	();
 	/*
 		Access to the children (in tree).
 	*/
 
 	void		SetLeft (VParabola * p) {_left  = p; p->parent = this;}
 	void		SetRight(VParabola * p) {_right = p; p->parent = this;}
-
+	void		deleteParabola();
 	VParabola *	Left () { return _left;  }
 	VParabola * Right() { return _right; }
 

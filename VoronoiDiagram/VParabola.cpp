@@ -7,20 +7,36 @@
 
 VParabola::VParabola()
 {
-	site	= 0;
+	site	= nullptr;
 	isLeaf	= false;
-	cEvent	= 0;
-	edge	= 0;
-	parent	= 0;
+	cEvent	= nullptr;
+	edge	= nullptr;
+	parent	= nullptr;
 }
 
 VParabola::VParabola(VPoint * s)
 {
 	site	= s; 
 	isLeaf	= true;
-	cEvent	= 0;
-	edge	= 0;
-	parent	= 0;
+	cEvent	= nullptr;
+	edge	= nullptr;
+	parent	= nullptr;
+}
+
+VParabola::~VParabola()
+{
+}
+
+void VParabola::deleteParabola()
+{
+	
+	if (!this)
+		return;
+	if(_left)
+		return _left->deleteParabola();
+	if(_right)
+		return _right->deleteParabola();
+	delete this;
 }
 
 /*

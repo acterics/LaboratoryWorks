@@ -3,7 +3,6 @@
 #include "ShaderManager.h"
 #include "../Rendering/GameObject.h"
 #include "../Rendering/Models/DumbbellModel.h"
-#include "../Rendering/Models/Triangle.h"
 
 
 using namespace Engine::Rendering;
